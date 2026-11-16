@@ -45,44 +45,6 @@ public class DonHang {
     private String noiDungDanhGia;
     private Date ngayTao;
 
-    public DonHang() {
-    }
-
-    public DonHang(Long idDonHang, String maDonHang, Integer idKhachHang, Integer idNhanVien,
-                   Integer idCaLam, Integer idKhuyenMai, String kenhBan, String hinhThucPhucVu,
-                   String soBanTheRung, Date gioHenLay, String maNhanDo, Long tongTienMon,
-                   Long tienGiamVoucher, Integer diemSuDung, Long tienGiamDiem, Long tongThanhToan,
-                   Integer diemCongThem, String phuongThucTt, Long tienKhachDua, Long tienThoiLai,
-                   String trangThaiTt, String trangThaiDon, String lyDoHuy, String ghiChuHoanTien,
-                   Integer soSaoDanhGia, String noiDungDanhGia, Date ngayTao) {
-        this.idDonHang = idDonHang;
-        this.maDonHang = maDonHang;
-        this.idKhachHang = idKhachHang;
-        this.idNhanVien = idNhanVien;
-        this.idCaLam = idCaLam;
-        this.idKhuyenMai = idKhuyenMai;
-        this.kenhBan = kenhBan;
-        this.hinhThucPhucVu = hinhThucPhucVu;
-        this.soBanTheRung = soBanTheRung;
-        this.gioHenLay = gioHenLay;
-        this.maNhanDo = maNhanDo;
-        this.tongTienMon = tongTienMon;
-        this.tienGiamVoucher = tienGiamVoucher;
-        this.diemSuDung = diemSuDung;
-        this.tienGiamDiem = tienGiamDiem;
-        this.tongThanhToan = tongThanhToan;
-        this.diemCongThem = diemCongThem;
-        this.phuongThucTt = phuongThucTt;
-        this.tienKhachDua = tienKhachDua;
-        this.tienThoiLai = tienThoiLai;
-        this.trangThaiTt = trangThaiTt;
-        this.trangThaiDon = trangThaiDon;
-        this.lyDoHuy = lyDoHuy;
-        this.ghiChuHoanTien = ghiChuHoanTien;
-        this.soSaoDanhGia = soSaoDanhGia;
-        this.noiDungDanhGia = noiDungDanhGia;
-        this.ngayTao = ngayTao;
-    }
 
     public Long getIdDonHang() {
         return idDonHang;

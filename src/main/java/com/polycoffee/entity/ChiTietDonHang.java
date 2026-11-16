@@ -25,22 +25,6 @@ public class ChiTietDonHang {
     private String mucDa;
     private String ghiChuPhaChe;
 
-    public ChiTietDonHang() {
-    }
-
-    public ChiTietDonHang(Long idCtDonHang, Long idDonHang, Integer idKichCoSp, Integer soLuong,
-                          Long donGiaChot, Long tongTienTopping, String mucDuong,
-                          String mucDa, String ghiChuPhaChe) {
-        this.idCtDonHang = idCtDonHang;
-        this.idDonHang = idDonHang;
-        this.idKichCoSp = idKichCoSp;
-        this.soLuong = soLuong;
-        this.donGiaChot = donGiaChot;
-        this.tongTienTopping = tongTienTopping;
-        this.mucDuong = mucDuong;
-        this.mucDa = mucDa;
-        this.ghiChuPhaChe = ghiChuPhaChe;
-    }
 
     public Long getIdCtDonHang() {
         return idCtDonHang;
