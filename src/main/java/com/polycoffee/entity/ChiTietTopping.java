@@ -1,10 +1,86 @@
 package com.polycoffee.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
- * File khung danh cho thanh vien push code len GitHub (Lab 3 - Bai 4 & Bai 5).
+ * Entity anh xa bang CHI_TIET_TOPPING trong CSDL polycoffee.
  *
  * @author Quý (Nhóm PolyCoffee - JAV102)
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ChiTietTopping {
-    // TODO: Quý copy code hoan chinh tu thu muc Lab3/phan_cong_5_thanh_vien/5_Quy dan de vao day roi Commit & Push len GitHub.
+    private Long idCtTopping;
+    private Long idCtDonHang;
+    private Integer idTopping;
+    private Integer soLuong;
+    private Long donGiaChot;
+
+    public ChiTietTopping() {
+    }
+
+    public ChiTietTopping(Long idCtTopping, Long idCtDonHang, Integer idTopping,
+                          Integer soLuong, Long donGiaChot) {
+        this.idCtTopping = idCtTopping;
+        this.idCtDonHang = idCtDonHang;
+        this.idTopping = idTopping;
+        this.soLuong = soLuong;
+        this.donGiaChot = donGiaChot;
+    }
+
+    public Long getIdCtTopping() {
+        return idCtTopping;
+    }
+
+    public void setIdCtTopping(Long idCtTopping) {
+        this.idCtTopping = idCtTopping;
+    }
+
+    public Long getIdCtDonHang() {
+        return idCtDonHang;
+    }
+
+    public void setIdCtDonHang(Long idCtDonHang) {
+        this.idCtDonHang = idCtDonHang;
+    }
+
+    public Integer getIdTopping() {
+        return idTopping;
+    }
+
+    public void setIdTopping(Integer idTopping) {
+        this.idTopping = idTopping;
+    }
+
+    public Integer getSoLuong() {
+        return soLuong;
+    }
+
+    public void setSoLuong(Integer soLuong) {
+        this.soLuong = soLuong;
+    }
+
+    public Long getDonGiaChot() {
+        return donGiaChot;
+    }
+
+    public void setDonGiaChot(Long donGiaChot) {
+        this.donGiaChot = donGiaChot;
+    }
+
+    @Override
+    public String toString() {
+        return "ChiTietTopping{" +
+                "idCtTopping=" + idCtTopping +
+                ", idCtDonHang=" + idCtDonHang +
+                ", idTopping=" + idTopping +
+                ", soLuong=" + soLuong +
+                ", donGiaChot=" + donGiaChot +
+                '}';
+    }
 }
