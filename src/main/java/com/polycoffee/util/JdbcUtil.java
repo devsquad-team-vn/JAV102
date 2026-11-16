@@ -15,9 +15,9 @@ import java.sql.Types;
  */
 public class JdbcUtil {
     static String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    static String dburl = "jdbc:sqlserver://localhost:1433;database=polycoffee;encrypt=false";
+    static String dburl = "jdbc:sqlserver://localhost:1433;database=polycoffee;encrypt=true;trustServerCertificate=true;";
     static String username = "sa";
-    static String password = "123";
+    static String password = "kdiuoilaiu1601";
 
     static {
         try {
@@ -46,11 +46,7 @@ public class JdbcUtil {
             stmt = connection.prepareStatement(sql);
         }
         for (int i = 0; i < values.length; i++) {
-            if (values[i] == null) {
-                stmt.setNull(i + 1, Types.NULL);
-            } else {
-                stmt.setObject(i + 1, values[i]);
-            }
+            stmt.setObject(i + 1, values[i]);
         }
         return stmt;
     }

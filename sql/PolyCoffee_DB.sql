@@ -355,6 +355,9 @@ GO
 -- =============================================================================
 -- INDEX HỖ TRỢ TRUY VẤN TỐC ĐỘ CAO & FILTERED UNIQUE INDEX
 -- =============================================================================
+SET ANSI_NULLS ON;
+SET QUOTED_IDENTIFIER ON;
+GO
 CREATE UNIQUE NONCLUSTERED INDEX UX_KHACH_HANG_Email ON dbo.KHACH_HANG(email) WHERE email IS NOT NULL;
 CREATE INDEX IX_SAN_PHAM_DanhMuc ON dbo.SAN_PHAM(id_danh_muc);
 CREATE INDEX IX_VI_VOUCHER_KhachHang ON dbo.VI_VOUCHER_KHACH_HANG(id_khach_hang, trang_thai);
