@@ -1,0 +1,190 @@
+/* PolyCoffee Customer Portal Styles */
+body.portal-body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--pc-cream);
+}
+
+.portal-navbar {
+    background: rgba(255, 253, 249, 0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--pc-border);
+    box-shadow: 0 4px 16px rgba(62, 39, 35, 0.05);
+    z-index: 1030;
+}
+.portal-brand {
+    font-weight: 800;
+    font-size: 1.35rem;
+    color: var(--pc-espresso) !important;
+    letter-spacing: -0.02em;
+}
+.portal-nav-link {
+    font-weight: 600;
+    color: var(--pc-espresso) !important;
+    padding: 0.5rem 0.9rem !important;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+}
+.portal-nav-link:hover, .portal-nav-link.active {
+    background-color: var(--pc-caramel-soft);
+    color: var(--pc-roast) !important;
+}
+
+.portal-hero {
+    background: linear-gradient(125deg, #2D1B17 0%, #4E342E 52%, #8C5A2B 100%);
+    border-radius: 20px;
+    color: #fff;
+    padding: 3rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 14px 34px rgba(62, 39, 35, 0.2);
+}
+.portal-hero::after {
+    content: "";
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200, 138, 50, 0.28) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* Drink Card */
+.portal-drink-card {
+    background: #fff;
+    border: 1px solid var(--pc-border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.portal-drink-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 26px rgba(62, 39, 35, 0.12);
+    border-color: var(--pc-caramel);
+}
+.portal-drink-thumb {
+    height: 170px;
+    background: linear-gradient(135deg, #F3EAE0 0%, #EAD9C7 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+.portal-drink-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.badge-bestseller {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--pc-caramel);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+/* Shopee-style Perforated Voucher Ticket */
+.voucher-ticket {
+    display: flex;
+    background: #fff;
+    border: 1px solid #EAD7BF;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--pc-shadow-sm);
+    height: 100%;
+}
+.voucher-ticket-stub {
+    width: 112px;
+    min-width: 112px;
+    background: linear-gradient(160deg, var(--pc-espresso) 0%, var(--pc-caramel) 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 8px;
+    text-align: center;
+    border-right: 2px dashed rgba(255, 255, 255, 0.55);
+}
+.voucher-ticket-body {
+    flex: 1;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Order Progress Timeline */
+.order-timeline {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 1rem 0;
+}
+.order-timeline::before {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 8%;
+    right: 8%;
+    height: 3px;
+    background: #E6DDD3;
+    z-index: 0;
+}
+.order-step {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    flex: 1;
+}
+.order-step-dot {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #EFE7DF;
+    color: var(--pc-muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    border: 2px solid #fff;
+}
+.order-step.active .order-step-dot {
+    background: var(--pc-caramel);
+    color: #fff;
+    box-shadow: 0 0 0 4px rgba(200, 138, 50, 0.22);
+}
+.order-step.done .order-step-dot {
+    background: var(--pc-success);
+    color: #fff;
+}
+.order-step-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 6px;
+    color: var(--pc-muted);
+}
+.order-step.active .order-step-label,
+.order-step.done .order-step-label {
+    color: var(--pc-espresso);
+}
+
+.portal-footer {
+    margin-top: auto;
+    background-color: var(--pc-espresso-dark);
+    color: #DFD3C8;
+}

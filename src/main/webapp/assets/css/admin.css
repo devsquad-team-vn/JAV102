@@ -1,0 +1,111 @@
+/* PolyCoffee Admin Backoffice Shell (100vh Fixed Sidebar + Sticky Header) */
+body.admin-body {
+    height: 100vh;
+    overflow: hidden;
+    background-color: #F5F0EA;
+}
+
+.admin-wrapper {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.admin-sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: linear-gradient(180deg, #2B1A17 0%, #3E2723 65%, #4A2F28 100%);
+    color: #F4EAE0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-y: auto;
+}
+.admin-sidebar-brand {
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.admin-sidebar-group {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #BCA89D;
+    padding: 14px 20px 6px;
+    font-weight: 700;
+}
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    margin: 2px 10px;
+    border-radius: 10px;
+    color: #EFE5DC;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.92rem;
+    transition: all 0.15s ease;
+}
+.admin-nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.09);
+    color: #fff;
+}
+.admin-nav-link.active {
+    background: linear-gradient(90deg, var(--pc-caramel) 0%, #B37722 100%);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(200, 138, 50, 0.35);
+}
+
+.admin-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.admin-topbar {
+    height: 66px;
+    min-height: 66px;
+    background: #fff;
+    border-bottom: 1px solid var(--pc-border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.admin-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 22px 24px 36px;
+}
+
+.kpi-card {
+    background: #fff;
+    border: 1px solid var(--pc-border);
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: var(--pc-shadow-sm);
+    height: 100%;
+    border-left: 4px solid var(--pc-caramel);
+}
+
+@media (max-width: 992px) {
+    .admin-sidebar {
+        position: fixed;
+        left: -270px;
+        top: 0;
+        bottom: 0;
+        z-index: 1050;
+        transition: left 0.25s ease;
+    }
+    .admin-sidebar.show {
+        left: 0;
+    }
+}

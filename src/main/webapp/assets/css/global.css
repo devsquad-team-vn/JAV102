@@ -1,0 +1,162 @@
+/* PolyCoffee Design System - Global Tokens & Thermal Bill Print Styles */
+:root {
+    --pc-espresso: #3E2723;
+    --pc-espresso-dark: #2B1A17;
+    --pc-roast: #6F4E37;
+    --pc-caramel: #C88A32;
+    --pc-caramel-hover: #B07624;
+    --pc-caramel-soft: #FDF3E3;
+    --pc-cream: #FAF6F0;
+    --pc-surface: #FFFFFF;
+    --pc-border: #EAE0D5;
+    --pc-text: #2B1E18;
+    --pc-muted: #786961;
+    --pc-success: #2E7D32;
+    --pc-danger: #C62828;
+    --pc-info: #0277BD;
+    --pc-shadow-sm: 0 2px 8px rgba(62, 39, 35, 0.06);
+    --pc-shadow-md: 0 6px 20px rgba(62, 39, 35, 0.09);
+    --pc-radius: 12px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Be Vietnam Pro', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--pc-cream);
+    color: var(--pc-text);
+    margin: 0;
+}
+
+/* Custom Buttons */
+.btn-coffee {
+    background-color: var(--pc-espresso);
+    border-color: var(--pc-espresso);
+    color: #fff;
+    font-weight: 600;
+}
+.btn-coffee:hover, .btn-coffee:focus {
+    background-color: var(--pc-roast);
+    border-color: var(--pc-roast);
+    color: #fff;
+}
+
+.btn-caramel {
+    background-color: var(--pc-caramel);
+    border-color: var(--pc-caramel);
+    color: #fff;
+    font-weight: 600;
+}
+.btn-caramel:hover, .btn-caramel:focus {
+    background-color: var(--pc-caramel-hover);
+    border-color: var(--pc-caramel-hover);
+    color: #fff;
+}
+
+.btn-outline-coffee {
+    border: 1px solid var(--pc-roast);
+    color: var(--pc-roast);
+    background: transparent;
+    font-weight: 600;
+}
+.btn-outline-coffee:hover {
+    background-color: var(--pc-roast);
+    color: #fff;
+}
+
+/* PolyCoffee Cards & Tables */
+.card-poly {
+    background: var(--pc-surface);
+    border: 1px solid var(--pc-border);
+    border-radius: var(--pc-radius);
+    box-shadow: var(--pc-shadow-sm);
+}
+
+.table-poly {
+    margin-bottom: 0;
+}
+.table-poly thead th {
+    background-color: #F6EFE7;
+    color: var(--pc-espresso);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    border-bottom: 2px solid var(--pc-border);
+    white-space: nowrap;
+}
+.table-poly tbody td {
+    vertical-align: middle;
+    border-color: #F3ECE4;
+}
+
+.text-coffee { color: var(--pc-roast) !important; }
+.text-espresso { color: var(--pc-espresso) !important; }
+.text-caramel { color: var(--pc-caramel) !important; }
+.bg-cream { background-color: var(--pc-cream) !important; }
+.bg-caramel-soft { background-color: var(--pc-caramel-soft) !important; }
+
+/* Read-Only Immutable Key Fields (SRS Section 1.4) */
+.form-control[readonly], .pc-readonly {
+    background-color: #F3EEE8 !important;
+    color: #5D4E46;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-weight: 600;
+    cursor: not-allowed;
+    border-style: dashed;
+}
+
+/* Toast Stack */
+.pc-toast-container {
+    position: fixed;
+    top: 76px;
+    right: 20px;
+    z-index: 1090;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 80mm Thermal Bill Print Styling */
+.thermal-bill {
+    width: 80mm;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 12px 14px;
+    background: #fff;
+    color: #111;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    border: 1px dashed #BDBDBD;
+}
+.thermal-divider {
+    border-top: 1px dashed #333;
+    margin: 6px 0;
+}
+.thermal-pin-box {
+    border: 2px solid #000;
+    padding: 6px;
+    text-align: center;
+    margin: 8px 0;
+    background: #FAFAFA;
+}
+
+@media print {
+    body * {
+        visibility: hidden !important;
+    }
+    #thermalBillPrintArea, #thermalBillPrintArea * {
+        visibility: visible !important;
+    }
+    #thermalBillPrintArea {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 80mm;
+        border: none !important;
+        padding: 4mm !important;
+    }
+}
