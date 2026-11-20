@@ -105,4 +105,6 @@ public class DanhMucDAO implements CrudDAO<DanhMuc, Integer> {
         List<DanhMuc> list = findBySql(sql, maDanhMuc);
         return list.isEmpty() ? null : list.get(0);
     }
+
+    // TODO (Kiet): Bo sung phuong thuc countDrinkInCategory cho chuc nang quan ly danh muc Lab 4
 }
