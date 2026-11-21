@@ -135,5 +135,12 @@ public class NhanVienDAO implements CrudDAO<NhanVien, Integer> {
         return list.isEmpty() ? null : list.get(0);
     }
 
-    // TODO (Nam): Bo sung phuong thuc findByEmail cho chuc nang dang nhap Lab 4
+    /**
+     * Tim nhan vien theo email hoac ten dang nhap (Lab 4 - Bai 3).
+     */
+    public NhanVien findByEmail(String email) {
+        String sql = "SELECT * FROM dbo.NHAN_VIEN WHERE email = ? OR ten_dang_nhap = ?";
+        List<NhanVien> list = findBySql(sql, email, email);
+        return list.isEmpty() ? null : list.get(0);
+    }
 }
