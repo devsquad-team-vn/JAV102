@@ -105,4 +105,24 @@ public class DanhMucDAO implements CrudDAO<DanhMuc, Integer> {
         List<DanhMuc> list = findBySql(sql, maDanhMuc);
         return list.isEmpty() ? null : list.get(0);
     }
+
+    /**
+     * Đếm số lượng sản phẩm thuộc danh mục (Lab 4 - Bài 4).
+     * Dùng để kiểm tra trước khi xóa danh mục (nếu có đồ uống thì chuyển INACTIVE để bảo toàn dữ liệu).
+     *
+     * @author Kiệt (Nhóm PolyCoffee - JAV102)
+     */
+    public int countDrinkInCategory(int categoryId) {
+        String sql = "SELECT COUNT(*) FROM dbo.SAN_PHAM WHERE id_danh_muc = ?";
+        try (ResultSet rs = JdbcUtil.executeQuery(sql, categoryId);
+             Statement stmt = rs.getStatement();
+             Connection conn = stmt.getConnection()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Lỗi đếm sản phẩm trong danh mục: " + e.getMessage(), e);
+        }
+        return 0;
+    }
 }
