@@ -1,10 +1,9 @@
 package com.polycoffee.servlet;
 
-import com.polycoffee.dao.DanhMucDAO;
-import com.polycoffee.dao.NhatKyHeThongDAO;
 import com.polycoffee.entity.DanhMuc;
 import com.polycoffee.entity.NhanVien;
-import com.polycoffee.entity.NhatKyHeThong;
+import com.polycoffee.service.CategoryService;
+import com.polycoffee.service.ServiceResult;
 import com.polycoffee.util.AuthUtil;
 import com.polycoffee.util.ParamUtil;
 import jakarta.servlet.ServletException;
@@ -12,224 +11,128 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Servlet xử lý các chức năng quản lý danh mục loại đồ uống (Lab 4 - Bài 4).
- * Hỗ trợ CRUD, đếm số lượng món và xóa thông minh (chuyển INACTIVE nếu đã có đồ uống).
+ * Servlet dieu phoi CRUD Loai do uong DANH_MUC (chuan PRG qua CategoryService, khong goi DAO truc tiep).
  *
  * @author Kiệt (Nhóm PolyCoffee - JAV102)
  */
 @WebServlet({"/manager/categories", "/manager/categories/add", "/manager/categories/edit", "/manager/categories/delete"})
 public class CategoryServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static final String FLASH_MSG = "CATEGORY_FLASH_MSG";
+    private static final String FLASH_ERR = "CATEGORY_FLASH_ERR";
+    private static final String FLASH_FORM = "CATEGORY_FLASH_FORM";
 
-    private final DanhMucDAO danhMucDAO = new DanhMucDAO();
-    private final NhatKyHeThongDAO nhatKyDAO = new NhatKyHeThongDAO();
+    private final CategoryService categoryService;
+
+    public CategoryServlet() {
+        this(new CategoryService());
+    }
+
+    public CategoryServlet(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int id = ParamUtil.getInt(request, "id");
-        if (id > 0) {
-            DanhMuc category = danhMucDAO.findById(id);
-            request.setAttribute("category", category);
+        HttpSession session = request.getSession(false);
+        DanhMuc flashForm = null;
+        if (session != null) {
+            Object msg = session.getAttribute(FLASH_MSG);
+            if (msg != null) {
+                request.setAttribute("message", msg);
+                session.removeAttribute(FLASH_MSG);
+            }
+            Object err = session.getAttribute(FLASH_ERR);
+            if (err != null) {
+                request.setAttribute("error", err);
+                session.removeAttribute(FLASH_ERR);
+            }
+            Object form = session.getAttribute(FLASH_FORM);
+            if (form instanceof DanhMuc dm) {
+                flashForm = dm;
+                session.removeAttribute(FLASH_FORM);
+            }
         }
-        loadCategories(request);
+
+        if (flashForm != null) {
+            request.setAttribute("category", flashForm);
+        } else {
+            int id = ParamUtil.getInt(request, "id");
+            if (id > 0) {
+                request.setAttribute("category", categoryService.findById(id));
+            }
+        }
+
+        List<DanhMuc> list = categoryService.findAll();
+        request.setAttribute("list", list);
+        request.setAttribute("drinkCounts", categoryService.getDrinkCounts(list));
         request.getRequestDispatcher("/views/categories/list.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String uri = request.getRequestURI();
+        String uriString = request.getRequestURI();
+        NhanVien actor = AuthUtil.getUser(request);
+        String clientIp = request.getRemoteAddr();
+        String redirectPath = "/manager/categories";
 
-        if (uri.contains("/add")) {
-            createCategory(request);
-        } else if (uri.contains("/edit")) {
-            updateCategory(request);
-        } else if (uri.contains("/delete")) {
-            deleteCategory(request);
-        }
-
-        loadCategories(request);
-        request.getRequestDispatcher("/views/categories/list.jsp").forward(request, response);
-    }
-
-    /**
-     * Tải danh sách danh mục và số lượng món tương ứng của từng danh mục
-     */
-    private void loadCategories(HttpServletRequest request) {
-        List<DanhMuc> list = danhMucDAO.findAll();
-        Map<Integer, Integer> drinkCounts = new HashMap<>();
-        for (DanhMuc dm : list) {
-            drinkCounts.put(dm.getIdDanhMuc(), danhMucDAO.countDrinkInCategory(dm.getIdDanhMuc()));
-        }
-        request.setAttribute("list", list);
-        request.setAttribute("drinkCounts", drinkCounts);
-    }
-
-    /**
-     * Thêm mới danh mục loại đồ uống
-     */
-    private void createCategory(HttpServletRequest request) {
-        String ma = ParamUtil.getString(request, "maDanhMuc");
-        String name = ParamUtil.getString(request, "tenDanhMuc");
-        String moTa = ParamUtil.getString(request, "moTa");
-        int thuTu = Math.max(0, ParamUtil.getInt(request, "thuTuHienThi"));
-        String trangThai = ParamUtil.getString(request, "trangThai");
-
-        // Validate dữ liệu đầu vào
-        if (name == null || name.isBlank()) {
-            request.setAttribute("error", "Tên loại đồ uống không được để trống!");
-            return;
-        }
-
-        // Tự sinh mã nếu để trống
-        if (ma == null || ma.isBlank()) {
-            ma = "DM" + (System.currentTimeMillis() % 100000);
-        }
-
-        if (trangThai == null || (!"ACTIVE".equals(trangThai) && !"INACTIVE".equals(trangThai))) {
-            trangThai = "ACTIVE";
-        }
-
-        // Kiểm tra trùng mã danh mục
-        if (danhMucDAO.findByMaDanhMuc(ma) != null) {
-            request.setAttribute("error", "Mã danh mục '" + ma + "' đã tồn tại, vui lòng chọn mã khác!");
-            return;
-        }
-
-        try {
-            DanhMuc dm = DanhMuc.builder()
-                    .maDanhMuc(ma)
-                    .tenDanhMuc(name)
-                    .moTa(moTa)
-                    .thuTuHienThi(thuTu)
-                    .trangThai(trangThai)
-                    .build();
-
-            int result = danhMucDAO.create(dm);
-            if (result > 0) {
-                logAction(request, "CREATE_CATEGORY", ma, null, "Thêm mới danh mục: " + name);
-                request.setAttribute("message", "Thêm mới danh mục thành công!");
-            } else {
-                request.setAttribute("error", "Thêm mới danh mục thất bại!");
+        if (uriString.contains("/add")) {
+            ServiceResult<DanhMuc> result = categoryService.create(
+                    ParamUtil.getString(request, "maDanhMuc"),
+                    ParamUtil.getString(request, "tenDanhMuc"),
+                    ParamUtil.getString(request, "moTa"),
+                    request.getParameter("thuTuHienThi"),
+                    ParamUtil.getString(request, "trangThai"),
+                    actor,
+                    clientIp
+            );
+            applyFlash(request, result);
+        } else if (uriString.contains("/edit")) {
+            int id = ParamUtil.getInt(request, "idDanhMuc");
+            ServiceResult<DanhMuc> result = categoryService.update(
+                    id,
+                    ParamUtil.getString(request, "maDanhMuc"),
+                    ParamUtil.getString(request, "tenDanhMuc"),
+                    ParamUtil.getString(request, "moTa"),
+                    request.getParameter("thuTuHienThi"),
+                    ParamUtil.getString(request, "trangThai"),
+                    actor,
+                    clientIp
+            );
+            applyFlash(request, result);
+            if (id > 0 && !"NOT_FOUND".equals(result.getCode())) {
+                redirectPath = "/manager/categories?id=" + id;
             }
-        } catch (Exception e) {
-            request.setAttribute("error", "Lỗi khi thêm danh mục: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Cập nhật thông tin danh mục loại đồ uống
-     */
-    private void updateCategory(HttpServletRequest request) {
-        int id = ParamUtil.getInt(request, "idDanhMuc");
-        String ma = ParamUtil.getString(request, "maDanhMuc");
-        String name = ParamUtil.getString(request, "tenDanhMuc");
-        String moTa = ParamUtil.getString(request, "moTa");
-        int thuTu = Math.max(0, ParamUtil.getInt(request, "thuTuHienThi"));
-        String trangThai = ParamUtil.getString(request, "trangThai");
-
-        DanhMuc category = danhMucDAO.findById(id);
-        if (category == null) {
-            request.setAttribute("error", "Loại đồ uống không tồn tại hoặc đã bị xóa!");
-            return;
-        }
-
-        if (name == null || name.isBlank()) {
-            request.setAttribute("error", "Tên loại đồ uống không được để trống!");
-            request.setAttribute("category", category);
-            return;
-        }
-
-        String oldInfo = "Tên: " + category.getTenDanhMuc() + ", Trạng thái: " + category.getTrangThai();
-
-        if (ma != null && !ma.isBlank()) {
-            category.setMaDanhMuc(ma);
-        }
-        category.setTenDanhMuc(name);
-        category.setMoTa(moTa);
-        category.setThuTuHienThi(thuTu);
-        if ("ACTIVE".equals(trangThai) || "INACTIVE".equals(trangThai)) {
-            category.setTrangThai(trangThai);
-        }
-
-        try {
-            int result = danhMucDAO.update(category);
-            if (result > 0) {
-                String newInfo = "Tên: " + name + ", Trạng thái: " + category.getTrangThai();
-                logAction(request, "UPDATE_CATEGORY", category.getMaDanhMuc(), oldInfo, newInfo);
-                request.setAttribute("message", "Cập nhật danh mục thành công!");
-            } else {
-                request.setAttribute("error", "Cập nhật danh mục thất bại!");
+        } else if (uriString.contains("/delete")) {
+            int id = ParamUtil.getInt(request, "idDanhMuc");
+            if (id <= 0) {
+                id = ParamUtil.getInt(request, "id");
             }
-            request.setAttribute("category", category);
-        } catch (Exception e) {
-            request.setAttribute("error", "Lỗi khi cập nhật danh mục: " + e.getMessage());
-            request.setAttribute("category", category);
+            ServiceResult<Void> result = categoryService.deleteOrDeactivate(id, actor, clientIp);
+            applyFlash(request, result);
         }
+
+        String ctx = request.getContextPath() != null ? request.getContextPath() : "";
+        response.sendRedirect(ctx + redirectPath);
     }
 
-    /**
-     * Xóa danh mục - áp dụng xóa thông minh (chuyển sang INACTIVE nếu danh mục đã có đồ uống)
-     */
-    private void deleteCategory(HttpServletRequest request) {
-        int id = ParamUtil.getInt(request, "idDanhMuc");
-        if (id <= 0) {
-            id = ParamUtil.getInt(request, "id");
-        }
-
-        DanhMuc category = id > 0 ? danhMucDAO.findById(id) : null;
-        if (category == null) {
-            request.setAttribute("error", "Không tìm thấy danh mục cần xóa!");
-            return;
-        }
-
-        // Kiểm tra số lượng đồ uống hiện có trong danh mục
-        int countDrink = danhMucDAO.countDrinkInCategory(id);
-        if (countDrink > 0) {
-            // Xóa thông minh: Chuyển sang INACTIVE để bảo toàn khóa ngoại và lịch sử đơn hàng
-            category.setTrangThai("INACTIVE");
-            danhMucDAO.update(category);
-            logAction(request, "DEACTIVATE_CATEGORY", category.getMaDanhMuc(), "ACTIVE", "INACTIVE");
-            request.setAttribute("message", "Danh mục đang có " + countDrink + " đồ uống, hệ thống đã chuyển sang ẩn (INACTIVE) để bảo toàn dữ liệu!");
+    private <T> void applyFlash(HttpServletRequest request, ServiceResult<T> result) {
+        HttpSession session = request.getSession(true);
+        if (result.isSuccess()) {
+            session.setAttribute(FLASH_MSG, result.getMessage());
         } else {
-            // Danh mục rỗng: Xóa vĩnh viễn
-            danhMucDAO.delete(id);
-            logAction(request, "DELETE_CATEGORY", category.getMaDanhMuc(), "Xóa danh mục: " + category.getTenDanhMuc(), null);
-            request.setAttribute("message", "Đã xóa vĩnh viễn danh mục thành công!");
-        }
-        // Xóa thông tin form đang chọn
-        request.setAttribute("category", null);
-    }
-
-    /**
-     * Ghi nhật ký hệ thống khi có thao tác tác động vào bảng DANH_MUC
-     */
-    private void logAction(HttpServletRequest request, String action, String maBanGhi, String cu, String moi) {
-        try {
-            NhanVien actor = AuthUtil.getUser(request);
-            if (actor != null) {
-                nhatKyDAO.create(NhatKyHeThong.builder()
-                        .idNhanVien(actor.getIdNhanVien())
-                        .loaiHanhDong(action)
-                        .bangTacDong("DANH_MUC")
-                        .maBanGhi(maBanGhi)
-                        .duLieuCu(cu)
-                        .duLieuMoi(moi)
-                        .diaChiIp(request.getRemoteAddr())
-                        .thoiGian(new Date())
-                        .build());
+            session.setAttribute(FLASH_ERR, result.getMessage());
+            if (result.getData() instanceof DanhMuc draft) {
+                session.setAttribute(FLASH_FORM, draft);
             }
-        } catch (Exception ignored) {
-            // Bỏ qua lỗi ghi log để không làm gián đoạn luồng chính
         }
     }
 }

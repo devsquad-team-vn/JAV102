@@ -8,11 +8,11 @@ import java.util.List;
 /**
  * Lop kiem thu minh hoa day du cac phuong thuc CRUD va tim kiem trong DanhMucDAO (Bai 5 - Lab 3).
  *
- * @author Quang (Nhóm PolyCoffee - JAV102)
+ * @author Kiệt (Nhóm PolyCoffee - JAV102)
  */
 public class TestDanhMucDAO {
     public static void main(String[] args) {
-        System.out.println("===== TEST DanhMucDAO (Phu trach: Quang) =====");
+        System.out.println("===== TEST DanhMucDAO (Phu trach: Kiệt) =====");
         DanhMucDAO dao = new DanhMucDAO();
 
         // 1. Test create()

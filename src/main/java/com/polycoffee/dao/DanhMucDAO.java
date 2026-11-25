@@ -14,7 +14,7 @@ import java.util.List;
  * DAO thao tac CRUD voi bang DANH_MUC trong CSDL polycoffee.
  * Cai dat theo chuan Bai 3 - Lab 3 JAV102.
  *
- * @author Quang (Nhóm PolyCoffee - JAV102)
+ * @author Kiệt (Nhóm PolyCoffee - JAV102)
  */
 public class DanhMucDAO implements CrudDAO<DanhMuc, Integer> {
 
@@ -107,10 +107,7 @@ public class DanhMucDAO implements CrudDAO<DanhMuc, Integer> {
     }
 
     /**
-     * Đếm số lượng sản phẩm thuộc danh mục (Lab 4 - Bài 4).
-     * Dùng để kiểm tra trước khi xóa danh mục (nếu có đồ uống thì chuyển INACTIVE để bảo toàn dữ liệu).
-     *
-     * @author Kiệt (Nhóm PolyCoffee - JAV102)
+     * Dem so luong do uong thuoc danh muc (Lab 4 - Bai 4).
      */
     public int countDrinkInCategory(int categoryId) {
         String sql = "SELECT COUNT(*) FROM dbo.SAN_PHAM WHERE id_danh_muc = ?";
@@ -121,7 +118,7 @@ public class DanhMucDAO implements CrudDAO<DanhMuc, Integer> {
                 return rs.getInt(1);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Lỗi đếm sản phẩm trong danh mục: " + e.getMessage(), e);
+            throw new RuntimeException("Loi dem san pham trong DANH_MUC: " + e.getMessage(), e);
         }
         return 0;
     }
