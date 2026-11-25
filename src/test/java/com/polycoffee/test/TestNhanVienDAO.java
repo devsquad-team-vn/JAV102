@@ -18,9 +18,9 @@ public class TestNhanVienDAO {
 
         // 1. Test create()
         System.out.println("=== 1. TEST create(NhanVien) ===");
-        NhanVien nvMoi = new NhanVien(null, "NV_TEST", "barista_test", "test.nv@polycoffee.vn",
+        NhanVien nvMoi = new NhanVien(null, "NV_TEST", "staff_test", "test.nv@polycoffee.vn",
                 "$2a$10$HashTest123", "Pham Nhan Vien Test", "0909998888",
-                "Q.10, TP.HCM", "/assets/avatar/default.jpg", "BARISTA",
+                "Q.10, TP.HCM", "/assets/avatar/default.jpg", "STAFF",
                 0, null, true, new Date());
         System.out.println("So dong them moi: " + dao.create(nvMoi));
 
@@ -42,14 +42,14 @@ public class TestNhanVienDAO {
             // 5. Test update()
             System.out.println("\n=== 5. TEST update() ===");
             nv.setHoTen("Pham Nhan Vien (Updated)");
-            nv.setVaiTro("CASHIER");
+            nv.setVaiTro("STAFF");
             nv.setDangHoatDong(false);
             System.out.println("So dong cap nhat: " + dao.update(nv));
             System.out.println("Sau cap nhat: " + dao.findById(idTest));
 
             // 6. Test findByTenDangNhap()
             System.out.println("\n=== 6. TEST findByTenDangNhap(String) ===");
-            System.out.println("Tim theo ten dang nhap: " + dao.findByTenDangNhap("barista_test"));
+            System.out.println("Tim theo ten dang nhap: " + dao.findByTenDangNhap("staff_test"));
 
             // 7. Test delete()
             System.out.println("\n=== 7. TEST delete() ===");

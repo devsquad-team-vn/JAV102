@@ -32,6 +32,12 @@
                     <a class="nav-link portal-nav-link ${navPath.contains('/trang-chu') or navPath.contains('/home') ? 'active' : ''}"
                        href="${ctx}/trang-chu"><i class="bi bi-house-door me-1"></i>Trang chủ</a>
                 </li>
+                <c:if test="${not empty sessionScope.user}">
+                    <li class="nav-item">
+                        <a class="nav-link portal-nav-link ${navPath.contains('/employee') ? 'active' : ''}"
+                           href="${ctx}/employee/workspace"><i class="bi bi-shield-check me-1"></i>Không gian Role</a>
+                    </li>
+                </c:if>
             </ul>
             <div class="d-flex flex-wrap align-items-center gap-2">
                 <c:choose>
@@ -41,6 +47,9 @@
                             <c:out value="${sessionScope.user.hoTen}"/>
                             <span class="badge text-bg-dark ms-1"><c:out value="${sessionScope.user.vaiTro}"/></span>
                         </span>
+                        <a href="${ctx}/employee/workspace" class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                            <i class="bi bi-grid-1x2 me-1"></i>Workspace
+                        </a>
                         <c:if test="${sessionScope.user.vaiTro eq 'ADMIN'}">
                             <a href="${ctx}/manager/categories" class="btn btn-sm btn-dark rounded-pill px-3">
                                 <i class="bi bi-speedometer2 me-1"></i>Quản trị

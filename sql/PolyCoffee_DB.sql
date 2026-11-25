@@ -138,7 +138,7 @@ CREATE TABLE dbo.NHAN_VIEN (
     CONSTRAINT UK_NHAN_VIEN_Ma UNIQUE (ma_nhan_vien),
     CONSTRAINT UK_NHAN_VIEN_TenDN UNIQUE (ten_dang_nhap),
     CONSTRAINT UK_NHAN_VIEN_Email UNIQUE (email),
-    CONSTRAINT CK_NHAN_VIEN_VaiTro CHECK (vai_tro IN ('ADMIN', 'CASHIER', 'BARISTA')),
+    CONSTRAINT CK_NHAN_VIEN_VaiTro CHECK (vai_tro IN ('ADMIN', 'STAFF')),
     CONSTRAINT CK_NHAN_VIEN_SaiMK CHECK (so_lan_sai_mk >= 0)
 );
 GO
@@ -462,8 +462,8 @@ GO
 INSERT INTO dbo.NHAN_VIEN (ma_nhan_vien, ten_dang_nhap, email, mat_khau_bam, ho_ten, so_dien_thoai, dia_chi, anh_dai_dien, vai_tro, so_lan_sai_mk, dang_hoat_dong)
 VALUES
 ('NV001', 'admin_an', 'an.nguyen@polycoffee.vn', '$2a$10$PolyCoffeeHashAdmin001', N'Nguyễn Văn An', '0901112233', N'120 Nguyễn Văn Linh, Q.7, TP.HCM', '/assets/avatar/nv001.jpg', 'ADMIN', 0, 1),
-('NV002', 'cashier_binh', 'binh.tran@polycoffee.vn', '$2a$10$PolyCoffeeHashCashier002', N'Trần Thị Bình', '0902223344', N'45 Lê Lợi, Q.1, TP.HCM', '/assets/avatar/nv002.jpg', 'CASHIER', 0, 1),
-('NV003', 'barista_cuong', 'cuong.le@polycoffee.vn', '$2a$10$PolyCoffeeHashBarista003', N'Lê Minh Cường', '0903334455', N'88 Tô Ký, Q.12, TP.HCM', '/assets/avatar/nv003.jpg', 'BARISTA', 0, 1);
+('NV002', 'staff_binh', 'binh.tran@polycoffee.vn', '$2a$10$PolyCoffeeHashStaff002', N'Trần Thị Bình', '0902223344', N'45 Lê Lợi, Q.1, TP.HCM', '/assets/avatar/nv002.jpg', 'STAFF', 0, 1),
+('NV003', 'staff_cuong', 'cuong.le@polycoffee.vn', '$2a$10$PolyCoffeeHashStaff003', N'Lê Minh Cường', '0903334455', N'88 Tô Ký, Q.12, TP.HCM', '/assets/avatar/nv003.jpg', 'STAFF', 0, 1);
 GO
 
 -- 6. PHIEN_CA_LAM_VIEC

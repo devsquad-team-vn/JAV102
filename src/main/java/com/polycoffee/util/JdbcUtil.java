@@ -15,9 +15,15 @@ import java.sql.Types;
  */
 public class JdbcUtil {
     static String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    static String dburl = "jdbc:sqlserver://localhost:1433;database=polycoffee1;encrypt=false";
-    static String username = "sa";
-    static String password = "123";
+    static String dburl = resolveConfig("POLYCOFFEE_DB_URL",
+            "jdbc:sqlserver://localhost:1433;database=polycoffee3;encrypt=true;trustServerCertificate=true;");
+    static String username = resolveConfig("POLYCOFFEE_DB_USER", "sa");
+    static String password = resolveConfig("POLYCOFFEE_DB_PASSWORD", "P6t4q29!");
+
+    private static String resolveConfig(String envKey, String fallback) {
+        String val = System.getenv(envKey);
+        return (val != null && !val.isBlank()) ? val.trim() : fallback;
+    }
 
     static {
         try {
@@ -46,11 +52,7 @@ public class JdbcUtil {
             stmt = connection.prepareStatement(sql);
         }
         for (int i = 0; i < values.length; i++) {
-            if (values[i] == null) {
-                stmt.setNull(i + 1, Types.NULL);
-            } else {
-                stmt.setObject(i + 1, values[i]);
-            }
+            stmt.setObject(i + 1, values[i]);
         }
         return stmt;
     }
