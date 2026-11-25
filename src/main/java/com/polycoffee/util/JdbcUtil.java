@@ -18,7 +18,7 @@ public class JdbcUtil {
     static String dburl = resolveConfig("POLYCOFFEE_DB_URL",
             "jdbc:sqlserver://localhost:1433;database=polycoffee3;encrypt=true;trustServerCertificate=true;");
     static String username = resolveConfig("POLYCOFFEE_DB_USER", "sa");
-    static String password = resolveConfig("POLYCOFFEE_DB_PASSWORD", "P6t4q29!");
+    static String password = resolveConfig("POLYCOFFEE_DB_PASSWORD", "...");
 
     private static String resolveConfig(String envKey, String fallback) {
         String val = System.getenv(envKey);
