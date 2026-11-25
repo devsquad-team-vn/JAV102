@@ -63,12 +63,12 @@
             </div>
             <h4 class="fw-bold mb-3">Cổng Vận Hành Nội Bộ</h4>
             <p class="small opacity-75 mb-4">
-                Đăng nhập bằng tài khoản Quản lý (ADMIN), Thu ngân (CASHIER) hoặc Pha chế (BARISTA) để truy cập hệ thống quản trị PolyCoffee.
+                Đăng nhập bằng tài khoản Quản lý (<code>ADMIN</code>) hoặc Nhân viên vận hành (<code>STAFF</code>) để truy cập hệ thống quản trị &amp; bán hàng PolyCoffee.
             </p>
             <div class="small d-flex flex-column gap-2 opacity-90">
                 <div><i class="bi bi-shield-check text-warning me-2"></i>Tự động khóa 15 phút nếu sai mật khẩu 5 lần</div>
                 <div><i class="bi bi-journal-check text-warning me-2"></i>Ghi nhận Audit Log &amp; địa chỉ IP đăng nhập</div>
-                <div><i class="bi bi-display text-warning me-2"></i>Phân quyền truy cập khu vực Quản lý (/manager/*)</div>
+                <div><i class="bi bi-display text-warning me-2"></i>Phân quyền 2 Role: <code>ADMIN</code> (/manager/*) &amp; <code>STAFF</code> (/employee/*)</div>
             </div>
         </div>
         <div class="pt-4 mt-4 border-top border-white border-opacity-10 small opacity-75">
@@ -128,11 +128,11 @@
                 </button>
                 <button type="button" class="btn btn-sm btn-light border role-pill"
                         onclick="fillRole('binh.tran@polycoffee.vn', '123456')">
-                    <span class="badge text-bg-warning text-dark me-1">CASHIER</span> Thu ngân Bình
+                    <span class="badge text-bg-primary me-1">STAFF</span> Nhân viên Bình
                 </button>
                 <button type="button" class="btn btn-sm btn-light border role-pill"
                         onclick="fillRole('cuong.le@polycoffee.vn', '123456')">
-                    <span class="badge text-bg-info text-dark me-1">BARISTA</span> Pha chế Cường
+                    <span class="badge text-bg-primary me-1">STAFF</span> Nhân viên Cường
                 </button>
             </div>
         </div>

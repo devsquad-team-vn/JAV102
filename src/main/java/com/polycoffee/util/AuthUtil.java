@@ -38,6 +38,19 @@ public class AuthUtil {
         return u != null && "ADMIN".equalsIgnoreCase(u.getVaiTro());
     }
 
+    public static boolean hasRole(HttpServletRequest request, String... roles) {
+        NhanVien u = getUser(request);
+        if (u == null || u.getVaiTro() == null || roles == null) {
+            return false;
+        }
+        for (String role : roles) {
+            if (role != null && role.equalsIgnoreCase(u.getVaiTro().trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void clear(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
