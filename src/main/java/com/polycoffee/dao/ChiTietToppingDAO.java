@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DAO thao tac CRUD voi bang CHI_TIET_TOPPING trong CSDL polycoffee.
+ * DAO thao tac CRUD voi bang CHI_TIET_TOPPING trong CSDL polycoffee (Assignment 1 - Phu trach: Quy).
  *
  * @author Quý (Nhóm PolyCoffee - JAV102)
  */

@@ -6,7 +6,7 @@ import com.polycoffee.entity.ChiTietTopping;
 import java.util.List;
 
 /**
- * Lop kiem thu minh hoa day du cac phuong thuc CRUD va tim kiem trong ChiTietToppingDAO (Bai 5 - Lab 3).
+ * Lop kiem thu minh hoa day du cac phuong thuc CRUD va tim kiem trong ChiTietToppingDAO (Assignment 1 - Phu trach: Quy).
  *
  * @author Quý (Nhóm PolyCoffee - JAV102)
  */

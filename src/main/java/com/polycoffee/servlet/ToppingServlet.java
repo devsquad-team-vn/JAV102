@@ -1,11 +1,9 @@
 package com.polycoffee.servlet;
 
-import com.polycoffee.dao.ChiTietToppingDAO;
-import com.polycoffee.dao.NhatKyHeThongDAO;
-import com.polycoffee.dao.ToppingDAO;
 import com.polycoffee.entity.NhanVien;
-import com.polycoffee.entity.NhatKyHeThong;
 import com.polycoffee.entity.Topping;
+import com.polycoffee.service.ServiceResult;
+import com.polycoffee.service.ToppingService;
 import com.polycoffee.util.AuthUtil;
 import com.polycoffee.util.ParamUtil;
 import jakarta.servlet.ServletException;
@@ -13,30 +11,64 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.util.Date;
 
 /**
- * Servlet quan ly CRUD danh muc Topping (TOPPING - Lab 4).
+ * Servlet dieu phoi CRUD Topping (chuan PRG qua ToppingService, khong goi DAO truc tiep).
  *
  * @author Quý (Nhóm PolyCoffee - JAV102)
  */
 @WebServlet({"/manager/toppings", "/manager/toppings/add", "/manager/toppings/edit", "/manager/toppings/delete"})
 public class ToppingServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private final ToppingDAO toppingDAO = new ToppingDAO();
-    private final ChiTietToppingDAO ctToppingDAO = new ChiTietToppingDAO();
-    private final NhatKyHeThongDAO nhatKyDAO = new NhatKyHeThongDAO();
+    private static final String FLASH_MSG = "TOPPING_FLASH_MSG";
+    private static final String FLASH_ERR = "TOPPING_FLASH_ERR";
+    private static final String FLASH_FORM = "TOPPING_FLASH_FORM";
+
+    private final ToppingService toppingService;
+
+    public ToppingServlet() {
+        this(new ToppingService());
+    }
+
+    public ToppingServlet(ToppingService toppingService) {
+        this.toppingService = toppingService;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int id = ParamUtil.getInt(request, "id");
-        if (id > 0) {
-            request.setAttribute("topping", toppingDAO.findById(id));
+        HttpSession session = request.getSession(false);
+        Topping flashForm = null;
+        if (session != null) {
+            Object msg = session.getAttribute(FLASH_MSG);
+            if (msg != null) {
+                request.setAttribute("message", msg);
+                session.removeAttribute(FLASH_MSG);
+            }
+            Object err = session.getAttribute(FLASH_ERR);
+            if (err != null) {
+                request.setAttribute("error", err);
+                session.removeAttribute(FLASH_ERR);
+            }
+            Object form = session.getAttribute(FLASH_FORM);
+            if (form instanceof Topping tp) {
+                flashForm = tp;
+                session.removeAttribute(FLASH_FORM);
+            }
         }
-        request.setAttribute("list", toppingDAO.findAll());
+
+        if (flashForm != null) {
+            request.setAttribute("topping", flashForm);
+        } else {
+            int id = ParamUtil.getInt(request, "id");
+            if (id > 0) {
+                request.setAttribute("topping", toppingService.findById(id));
+            }
+        }
+        request.setAttribute("list", toppingService.findAll());
         request.getRequestDispatcher("/views/topping/list.jsp").forward(request, response);
     }
 
@@ -44,133 +76,57 @@ public class ToppingServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String uri = request.getRequestURI();
+        NhanVien actor = AuthUtil.getUser(request);
+        String clientIp = request.getRemoteAddr();
+        String redirectPath = "/manager/toppings";
+
         if (uri.contains("/add")) {
-            create(request);
+            ServiceResult<Topping> result = toppingService.create(
+                    ParamUtil.getString(request, "maTopping"),
+                    ParamUtil.getString(request, "tenTopping"),
+                    request.getParameter("giaTopping"),
+                    ParamUtil.getString(request, "trangThai"),
+                    actor,
+                    clientIp
+            );
+            applyFlash(request, result);
         } else if (uri.contains("/edit")) {
-            update(request);
+            int id = ParamUtil.getInt(request, "idTopping");
+            ServiceResult<Topping> result = toppingService.update(
+                    id,
+                    ParamUtil.getString(request, "maTopping"),
+                    ParamUtil.getString(request, "tenTopping"),
+                    request.getParameter("giaTopping"),
+                    ParamUtil.getString(request, "trangThai"),
+                    actor,
+                    clientIp
+            );
+            applyFlash(request, result);
+            if (id > 0 && !"NOT_FOUND".equals(result.getCode())) {
+                redirectPath = "/manager/toppings?id=" + id;
+            }
         } else if (uri.contains("/delete")) {
-            delete(request);
-        }
-        request.setAttribute("list", toppingDAO.findAll());
-        request.getRequestDispatcher("/views/topping/list.jsp").forward(request, response);
-    }
-
-    private void create(HttpServletRequest request) {
-        String ma = ParamUtil.getString(request, "maTopping");
-        String ten = ParamUtil.getString(request, "tenTopping");
-        long gia = ParamUtil.getLong(request, "giaTopping");
-        String trangThai = ParamUtil.getString(request, "trangThai");
-
-        if (ten == null || ten.isBlank() || gia < 0) {
-            request.setAttribute("error", "Ten topping khong duoc de trong va gia phai >= 0!");
-            return;
-        }
-        if (ma == null || ma.isBlank()) {
-            ma = "TP" + (System.currentTimeMillis() % 100000);
-        }
-        if (toppingDAO.findByMaTopping(ma) != null) {
-            request.setAttribute("error", "Ma topping '" + ma + "' da ton tai!");
-            return;
-        }
-        try {
-            Topping tp = Topping.builder()
-                    .maTopping(ma)
-                    .tenTopping(ten)
-                    .giaTopping(gia)
-                    .hinhAnh("/assets/img/tp-default.jpg")
-                    .trangThai(trangThai != null && !trangThai.isBlank() ? trangThai : "AVAILABLE")
-                    .build();
-            int rs = toppingDAO.create(tp);
-            if (rs > 0) {
-                logAction(request, "CREATE_TOPPING", ma, null,
-                        "{\"ten_topping\":\"" + esc(ten) + "\",\"gia_topping\":" + gia + ",\"trang_thai\":\"" + tp.getTrangThai() + "\"}");
+            int id = ParamUtil.getInt(request, "idTopping");
+            if (id <= 0) {
+                id = ParamUtil.getInt(request, "id");
             }
-            request.setAttribute(rs > 0 ? "message" : "error", rs > 0 ? "Them topping thanh cong!" : "Them topping that bai!");
-        } catch (Exception e) {
-            request.setAttribute("error", "Loi them topping: " + e.getMessage());
+            ServiceResult<Void> result = toppingService.deleteOrDeactivate(id, actor, clientIp);
+            applyFlash(request, result);
         }
+
+        String ctx = request.getContextPath() != null ? request.getContextPath() : "";
+        response.sendRedirect(ctx + redirectPath);
     }
 
-    private void update(HttpServletRequest request) {
-        int id = ParamUtil.getInt(request, "idTopping");
-        String ten = ParamUtil.getString(request, "tenTopping");
-        long gia = ParamUtil.getLong(request, "giaTopping");
-        String trangThai = ParamUtil.getString(request, "trangThai");
-
-        Topping tp = toppingDAO.findById(id);
-        if (tp == null) {
-            request.setAttribute("error", "Khong tim thay topping!");
-            return;
-        }
-        if (ten == null || ten.isBlank() || gia < 0) {
-            request.setAttribute("error", "Ten topping khong hop le hoac gia < 0!");
-            request.setAttribute("topping", tp);
-            return;
-        }
-        String oldJson = "{\"ten_topping\":\"" + esc(tp.getTenTopping()) + "\",\"gia_topping\":" + tp.getGiaTopping() + ",\"trang_thai\":\"" + tp.getTrangThai() + "\"}";
-        tp.setTenTopping(ten);
-        tp.setGiaTopping(gia);
-        if (trangThai != null && !trangThai.isBlank()) {
-            tp.setTrangThai(trangThai);
-        }
-        try {
-            int rs = toppingDAO.update(tp);
-            if (rs > 0) {
-                logAction(request, "UPDATE_TOPPING", tp.getMaTopping(), oldJson,
-                        "{\"ten_topping\":\"" + esc(ten) + "\",\"gia_topping\":" + gia + ",\"trang_thai\":\"" + tp.getTrangThai() + "\"}");
-            }
-            request.setAttribute(rs > 0 ? "message" : "error", rs > 0 ? "Cap nhat topping thanh cong!" : "Cap nhat that bai!");
-            request.setAttribute("topping", tp);
-        } catch (Exception e) {
-            request.setAttribute("error", "Loi cap nhat topping: " + e.getMessage());
-        }
-    }
-
-    private void delete(HttpServletRequest request) {
-        int id = ParamUtil.getInt(request, "idTopping");
-        if (id <= 0) {
-            id = ParamUtil.getInt(request, "id");
-        }
-        Topping tp = id > 0 ? toppingDAO.findById(id) : null;
-        if (tp == null) {
-            request.setAttribute("error", "Khong tim thay topping can xoa!");
-            return;
-        }
-        boolean usedInOrders = !ctToppingDAO.findBySql("SELECT * FROM dbo.CHI_TIET_TOPPING WHERE id_topping = ?", id).isEmpty();
-        if (usedInOrders) {
-            String oldJson = "{\"trang_thai\":\"" + tp.getTrangThai() + "\"}";
-            tp.setTrangThai("INACTIVE");
-            toppingDAO.update(tp);
-            logAction(request, "DEACTIVATE_TOPPING", tp.getMaTopping(), oldJson, "{\"trang_thai\":\"INACTIVE\"}");
-            request.setAttribute("message", "Topping da phat sinh giao dich, da chuyen sang INACTIVE!");
+    private <T> void applyFlash(HttpServletRequest request, ServiceResult<T> result) {
+        HttpSession session = request.getSession(true);
+        if (result.isSuccess()) {
+            session.setAttribute(FLASH_MSG, result.getMessage());
         } else {
-            String oldJson = "{\"ten_topping\":\"" + esc(tp.getTenTopping()) + "\",\"gia_topping\":" + tp.getGiaTopping() + "}";
-            toppingDAO.delete(id);
-            logAction(request, "DELETE_TOPPING", tp.getMaTopping(), oldJson, null);
-            request.setAttribute("message", "Da xoa topping thanh cong!");
-        }
-    }
-
-    private void logAction(HttpServletRequest req, String action, String maBanGhi, String cu, String moi) {
-        try {
-            NhanVien actor = AuthUtil.getUser(req);
-            if (actor != null) {
-                nhatKyDAO.create(NhatKyHeThong.builder()
-                        .idNhanVien(actor.getIdNhanVien())
-                        .loaiHanhDong(action)
-                        .bangTacDong("TOPPING")
-                        .maBanGhi(maBanGhi)
-                        .duLieuCu(cu)
-                        .duLieuMoi(moi)
-                        .diaChiIp(req.getRemoteAddr())
-                        .thoiGian(new Date())
-                        .build());
+            session.setAttribute(FLASH_ERR, result.getMessage());
+            if (result.getData() instanceof Topping draft) {
+                session.setAttribute(FLASH_FORM, draft);
             }
-        } catch (Exception ignored) {
         }
-    }
-
-    private String esc(String s) {
-        return s == null ? "" : s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 }

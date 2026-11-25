@@ -6,13 +6,13 @@ import com.polycoffee.entity.Topping;
 import java.util.List;
 
 /**
- * Lop kiem thu minh hoa day du cac phuong thuc CRUD va tim kiem trong ToppingDAO (Bai 5 - Lab 3).
+ * Lop kiem thu minh hoa day du cac phuong thuc CRUD va tim kiem trong ToppingDAO (Assignment 1 - Phu trach: Quy).
  *
- * @author Nam (Nhóm PolyCoffee - JAV102)
+ * @author Quý (Nhóm PolyCoffee - JAV102)
  */
 public class TestToppingDAO {
     public static void main(String[] args) {
-        System.out.println("===== TEST ToppingDAO (Phu trach: Nam) =====");
+        System.out.println("===== TEST ToppingDAO (Phu trach: Quy) =====");
         ToppingDAO dao = new ToppingDAO();
 
         // 1. Test create()

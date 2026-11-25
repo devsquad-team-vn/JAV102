@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
-<%-- @author Quý (Nhóm PolyCoffee - JAV102) --%>
+<%-- @author Quý (Nhóm PolyCoffee - JAV102) - Quan ly Topping (Assignment 1) --%>
 <jsp:include page="/views/layout/header.jsp"/>
 
 <div class="row g-4">

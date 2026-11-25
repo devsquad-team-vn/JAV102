@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DAO thao tac CRUD voi bang TOPPING trong CSDL polycoffee.
+ * DAO thao tac CRUD voi bang TOPPING trong CSDL polycoffee (Assignment 1 - Phu trach: Quy).
  *
- * @author Nam (Nhóm PolyCoffee - JAV102)
+ * @author Quý (Nhóm PolyCoffee - JAV102)
  */
 public class ToppingDAO implements CrudDAO<Topping, Integer> {
 
